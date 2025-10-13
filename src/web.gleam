@@ -12,6 +12,7 @@ pub fn main() -> Nil {
   let assert Ok(_) =
     wisp_mist.handler(handle_request, secret_key_base)
     |> mist.new
+    |> mist.bind("0.0.0.0")
     |> mist.port(3000)
     |> mist.start
   process.sleep_forever()

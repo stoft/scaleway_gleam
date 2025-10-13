@@ -35,7 +35,7 @@ jobs:
                   context: .
                   push: true
                   tags: |
-                      ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/puzzel:prod
-                      ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/puzzel:${{ steps.meta.outputs.sha_tag }}
+                      ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/scaleway_gleam:prod
+                      ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/scaleway_gleam:${{ steps.meta.outputs.sha_tag }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max

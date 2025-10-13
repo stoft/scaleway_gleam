@@ -33,6 +33,7 @@ jobs:
               uses: docker/build-push-action@v6
               with:
                   context: .
+                  platforms: linux/amd64
                   push: true
                   tags: |
                       ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/scaleway_gleam:prod

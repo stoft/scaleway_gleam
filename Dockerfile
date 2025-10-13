@@ -21,9 +21,10 @@ ENV BUILD_TIME=${BUILD_TIME}
 #     adduser --system webapp -g webapp
 COPY --from=build /app/build/erlang-shipment /app
 COPY healthcheck.sh /app/healthcheck.sh
-RUN apk add --no-cache wget &&
+RUN apk add --no-cache wget && \
     chmod +x /app/healthcheck.sh
 WORKDIR /app
+EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD /app/healthcheck.sh || exit 1
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["run"]

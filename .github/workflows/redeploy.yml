@@ -1,0 +1,34 @@
+name: Redeploy Serverless Container (manual)
+
+on:
+    workflow_dispatch:
+        inputs:
+            container_id:
+                description: "Scaleway Serverless Container ID"
+                required: true
+            tag:
+                description: "Image tag to deploy (e.g., prod or a SHA)"
+                required: true
+                default: prod
+
+jobs:
+    redeploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install scaleway CLI
+              run: |
+                  curl -fsSL https://raw.githubusercontent.com/scaleway/scaleway-cli/v2.28.0/install.sh | sh
+                  sudo mv scw /usr/local/bin/scw
+            - name: Configure scaleway CLI
+              env:
+                  SCW_API_KEY: ${{ secrets.SCALEWAY_API_KEY }}
+              run: |
+                  scw init secret-key=${SCW_API_KEY} send-telemetry=false install-autocomplete=false with-ssh-key=false profile=ci <<<'y'
+            - name: Trigger container deploy
+              env:
+                  ENDPOINT: ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}
+                  CONTAINER_ID: ${{ github.event.inputs.container_id }}
+                  TAG: ${{ github.event.inputs.tag }}
+              run: |
+                  IMAGE="${ENDPOINT}/puzzel:${TAG}"
+                  scw serverless container update ${CONTAINER_ID} image=${IMAGE}

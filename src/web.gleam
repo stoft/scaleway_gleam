@@ -105,7 +105,7 @@ fn hello_world(_request: wisp.Request) -> wisp.Response {
 <body>
     <div class=\"container\">
         <h1>🌊 Hello from Wisp!</h1>
-        <p>Welcome to your first Wisp web application!</p>
+        <p>This is a simple web application that uses Wisp and Hanko for authentication.</p>
         
         <div class=\"feature-list\">
             <h3>What you've got:</h3>
@@ -117,7 +117,6 @@ fn hello_world(_request: wisp.Request) -> wisp.Response {
             </ul>
         </div>
         
-        <p><strong>Server running on:</strong> http://localhost:3000</p>
         <p>
           <a href=\"/login\" style=\"
             display: inline-block;

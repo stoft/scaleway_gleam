@@ -1,3 +1,4 @@
+import context
 import dot_env as dot
 import dot_env/env
 import gleam/dynamic/decode
@@ -28,9 +29,22 @@ pub fn main() -> Nil {
     Error(_) -> 3000
   }
 
+  // Create SQLite database context
+  let ctx = context.new("app.db")
+
+  // Setup database (create file if needed)
+  case context.setup_database(ctx) {
+    Ok(_) -> io.println("Database setup completed")
+    Error(e) -> {
+      io.println("Database setup failed: " <> e)
+      // Exit early if database setup fails
+      process.sleep_forever()
+    }
+  }
+
   io.println("Starting server on http://localhost:" <> int.to_string(port))
   let assert Ok(_) =
-    wisp_mist.handler(handle_request, secret_key_base)
+    wisp_mist.handler(fn(req) { handle_request(req, ctx) }, secret_key_base)
     |> mist.new
     |> mist.bind("0.0.0.0")
     |> mist.port(port)
@@ -38,7 +52,7 @@ pub fn main() -> Nil {
   process.sleep_forever()
 }
 
-fn handle_request(request: wisp.Request) -> wisp.Response {
+fn handle_request(request: wisp.Request, ctx: context.Context) -> wisp.Response {
   let hanko_api_url = case env.get_string("HANKO_API_URL") {
     Ok(v) -> v
     Error(_) -> ""
@@ -49,8 +63,8 @@ fn handle_request(request: wisp.Request) -> wisp.Response {
   }
 
   case request.path {
-    "/" -> hello_world(request)
-    "/hello" -> hello_world(request)
+    "/" -> hello_world(request, ctx)
+    "/hello" -> hello_world(request, ctx)
     "/login" -> login_page(hanko_api_url)
     "/profile" -> profile_page(hanko_api_url)
     "/api/me" -> me_endpoint(request, hanko_api_url, cookie_name)
@@ -58,9 +72,14 @@ fn handle_request(request: wisp.Request) -> wisp.Response {
   }
 }
 
-fn hello_world(_request: wisp.Request) -> wisp.Response {
-  let html =
-    "<!DOCTYPE html>
+fn hello_world(_request: wisp.Request, ctx: context.Context) -> wisp.Response {
+  // Use the context to increment visit counter and get the count
+  let visit_count = case context.increment_visit_counter(ctx) {
+    Ok(count) -> count
+    Error(_) -> 0
+  }
+
+  let html = "<!DOCTYPE html>
 <html>
 <head>
     <title>Hello World - Wisp</title>
@@ -100,12 +119,25 @@ fn hello_world(_request: wisp.Request) -> wisp.Response {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
         }
+        .db-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
     <div class=\"container\">
         <h1>🌊 Hello from Wisp!</h1>
         <p>This is a simple web application that uses Wisp and Hanko for authentication.</p>
+        
+        <div class=\"db-info\">
+            <h3>🗄️ Database Connected!</h3>
+            <p>SQLite database is working. Total visits: " <> int.to_string(
+      visit_count,
+    ) <> "</p>
+        </div>
         
         <div class=\"feature-list\">
             <h3>What you've got:</h3>
@@ -114,6 +146,7 @@ fn hello_world(_request: wisp.Request) -> wisp.Response {
                 <li>🚀 Built with Gleam</li>
                 <li>🎨 Beautiful styling</li>
                 <li>⚡ Fast and lightweight</li>
+                <li>🗄️ SQLite database integration</li>
             </ul>
         </div>
         

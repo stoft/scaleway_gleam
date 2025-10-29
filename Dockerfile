@@ -32,7 +32,7 @@ RUN apk add --no-cache wget curl \
     # Install Litestream matching the container architecture
     && arch=$(uname -m) \
     && case "$arch" in \
-         x86_64) litestream_arch=amd64 ;; \
+         x86_64) litestream_arch=x86_64 ;; \
          aarch64|arm64) litestream_arch=arm64 ;; \
          armv7l) litestream_arch=armv7 ;; \
          armv6l) litestream_arch=armv6 ;; \

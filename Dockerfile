@@ -14,6 +14,7 @@ RUN cd /app && gleam export erlang-shipment
 
 # Final stage
 FROM erlang:${ERLANG_VERSION}-alpine
+ARG LITESTREAM_VERSION=0.5.2
 ARG GIT_SHA
 ARG BUILD_TIME
 ENV GIT_SHA=${GIT_SHA}

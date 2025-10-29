@@ -29,6 +29,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN apk add --no-cache wget curl \
     && chmod +x /app/healthcheck.sh \
     && chmod +x /app/entrypoint.sh \
+    && chmod +x /app/web \
     # Install Litestream matching the container architecture
     && arch=$(uname -m) \
     && case "$arch" in \

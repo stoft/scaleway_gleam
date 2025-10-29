@@ -13,7 +13,7 @@ if [ "$1" = "run" ]; then
     litestream replicate -config /app/litestream.yml &
 
     echo "Starting Gleam application..."
-    exec /app/web
+    exec /app/entrypoint.sh run
 else
-    exec "$@"
+    exec /app/entrypoint.sh "$@"
 fi

@@ -25,11 +25,11 @@ ENV BUILD_TIME=${BUILD_TIME}
 COPY --from=build /app/build/erlang-shipment /app
 COPY healthcheck.sh /app/healthcheck.sh
 COPY litestream.yml /app/litestream.yml
-COPY entrypoint.sh /app/entrypoint.sh
+COPY entrypoint.sh /app/docker-entrypoint.sh
 RUN apk add --no-cache wget curl \
     && chmod +x /app/healthcheck.sh \
     && chmod +x /app/entrypoint.sh \
-    && chmod +x /app/web \
+    && chmod +x /app/docker-entrypoint.sh \
     # Install Litestream matching the container architecture
     && arch=$(uname -m) \
     && case "$arch" in \
@@ -47,5 +47,5 @@ RUN apk add --no-cache wget curl \
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD /app/healthcheck.sh || exit 1
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["run"]

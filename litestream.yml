@@ -1,5 +1,6 @@
 # Litestream configuration for Scaleway Object Storage
 # Replace the placeholder values with your actual Scaleway credentials
+# https://litestream.io/guides/scaleway/
 
 # Global settings
 access-key-id: ${S3_ACCESS_KEY_ID}
@@ -7,9 +8,13 @@ secret-access-key: ${S3_SECRET_ACCESS_KEY}
 
 # Database configuration
 dbs:
-  - path: ./app.db
+  - path: /app/app.db
     replicas:
       - name: scaleway
-        url: s3://${S3_BUCKET}/app.db
+        type: s3
+        bucket: ${S3_BUCKET}
+        path: app.db
+        endpoint: ${S3_ENDPOINT}
+        region: ${S3_REGION}
         retention: 24h
         retention-check-interval: 1h

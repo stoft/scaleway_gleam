@@ -1,6 +1,6 @@
 # Scaleway Gleam Hanko
 
-This is a Gleam example project with Hanko authentication deployed to Scaleway Serverless Containers.
+This is a Gleam example project with [Hanko](https://www.hanko.io/) authentication deployed to [Scaleway](https://www.scaleway.com/) Serverless Containers using SQLite and [Litestream](https://litestream.io/) for database replication/restore from Scaleway Object Storage.
 
 Minimum Scaleway Serverless Container configuration needed to work for this project with scale to zero:
 
@@ -16,10 +16,6 @@ gleam run   # Run the project
 gleam test  # Run the tests
 make run-watch  # Run with file watching
 ```
-
-## Database Replication with Litestream
-
-This project uses [Litestream](https://litestream.io/) for SQLite database replication to Scaleway Object Storage.
 
 ### Setup
 
